@@ -1,7 +1,0 @@
-# Based on idea '***2. Habit Tracker***' from Project Ideas folder:
-
-
-# sudo apt install python3.12-venv then source .djangovenv/bin/activate
-# python -m pip install django - best results for venv
-# then run python -m pip install --upgrade pip (makes sure up to date)
-
