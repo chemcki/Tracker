@@ -1,0 +1,29 @@
+# Django for professionals steps: 
+# run: sudo docker run hello-world then sudo docker info (make sure its running)
+#  Create a directory to create a venv and install django in 
+# run:  python3 -m venv .djangovenv (or whatever venv name you want)
+# source .djangovenv/bin/activate
+# then in the venv run: python -m pip install django 
+# to up date it python -m pip install --upgrade pip
+# start the project run(don't forget the dot, if you do rm -r django_project): django-admin startproject django_project .
+#  (the book says to do this) python manage.py migrate
+# python manage.py runserver
+# run: python manage.py startapp <app name> (ie. python manage.py startapp pages)
+# To start app(install new tracker directory and its files): python manage.py startapp tracker
+    # In django_project/settings.py put it under INSTALLED_APPS 
+# not done yet#    # Set the homepage URL route (pg 22)- resume from there to requirements.txt(pg 24)
+
+# make a requirements.txt : pip freeze > requirements.txt
+# Deactivate your venv via command: deactivate (now you will set up docker)
+# Create a Dockerfile in project-level directory(where manage.py is)(pg 26)
+# Create a .dockerignore file
+# Run sudo docker build . 
+# Create docker-compose.yml (pg 29)
+# Run sudo docker compose up 
+# Run docker compose down
+# Create a .gitignore file
+# Run git init
+# Run git status
+# Run git add . 
+# Run git commit -m <message>
+# Run git push -u origin main
