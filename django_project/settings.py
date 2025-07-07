@@ -41,7 +41,10 @@ INSTALLED_APPS = [
 
     # Custom 
     'tracker.apps.TrackerConfig',
+    'accounts.apps.AccountsConfig',
 ]
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
