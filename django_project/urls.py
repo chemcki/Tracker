@@ -17,7 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+#from pages.views import error_view 
+
 urlpatterns = [
+    # Django admin
     path('admin/', admin.site.urls),
+    # Error veiw for Debug=True
+    #path("error/", error_view),
+    # User management
+    path('accounts/', include('django.contrib.auth.urls')),
+    # Local apps
+    path("accounts/", include("accounts.urls")),
     path("", include('pages.urls')),
 ]
