@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve
 
-from .views import HomePageView
+from .views import HomePageView, DashboardPageView
 
 class HomepageTests(SimpleTestCase):
     def setUp(self):
@@ -23,3 +23,24 @@ class HomepageTests(SimpleTestCase):
     def test_homepage_url_resolves_homepageview(self):
         view = resolve("/")
         self.assertEqual(view.func.__name__, HomePageView.as_view().__name__)
+
+class DashboardPageTests(SimpleTestCase):
+    def setUp(self):
+        url = reverse("dashboard")
+        self.response = self.client.get(url)
+
+    def test_dashboardpage_status_code(self):
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_dashboardpage_template(self):
+        self.assertTemplateUsed(self.response, "dashboard.html")
+
+    def test_dashboardpage_contains_correct_html(self):
+        self.assertContains(self.response, "Dashboard")
+
+    def test_dashboardpage_does_not_contain_incorrect_html(self):
+        self.assertNotContains(self.response, "I'm not found on the page")
+
+    def test_dashboardpage_url_resolves_dashboardpageview(self):
+        view = resolve("/dashboard")
+        self.assertEqual(view.func.__name__,DashboardPageView.as_view().__name__)

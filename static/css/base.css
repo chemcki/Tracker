@@ -1,0 +1,16 @@
+body {
+    min-height: 75rem;
+    padding-top: 5.5rem;
+}
+
+h1 {
+    text-align: center;
+    color: rgb(61, 172, 61);
+}
+
+.homepage-image {
+    display: block;
+    margin: 0 auto;
+    height: 500;
+    width: auto;
+}
