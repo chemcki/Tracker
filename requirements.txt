@@ -5,3 +5,4 @@ psycopg2-binary>=2.9.10,<3.0
 django-crispy-forms==2.4
 crispy-bootstrap5==2025.6
 django-allauth==65.10.0
+environs[django]==14.2.0

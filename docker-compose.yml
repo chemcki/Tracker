@@ -8,6 +8,11 @@ services:
       - .:/practice
     depends_on:
       - db
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DEBUG=${DEBUG}
+    env_file:
+      - .env
   db:
     image: postgres:16
     volumes:
