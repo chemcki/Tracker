@@ -64,7 +64,18 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Django Mailjet settings(live)
+# EMAIL_BACKEND = env('EMAIL_BACKEND')
+# MAILJET_API_KEY = env('MAILJET_API_KEY')
+# MAILJET_API_SECRET = env('MAILJET_API_SECRET')
+
+# Django Mailtrap settings(local)
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '5e12babbaa0b68'
+EMAIL_HOST_PASSWORD = '2a2951e2d402f4'
+EMAIL_PORT = '2525'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
@@ -160,6 +171,10 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_FROM_EMAIL ="admin@HabitTracker.com"
+
+
+
 
 
 
