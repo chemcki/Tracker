@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
+    "debug_toolbar",
 
     # Local
     'tracker.apps.TrackerConfig',
@@ -95,7 +96,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+# for django-debug-toolbar Internal IPs for use with docker
+import socket
+
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] 
+
 
 ROOT_URLCONF = 'django_project.urls'
 
