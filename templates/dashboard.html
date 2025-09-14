@@ -1,8 +1,43 @@
 <!-- Dashboard -->
  {% extends "_base.html" %}
+ {% load tracker_extras %}
 
  {% block title %}Dashboard{% endblock %}
 
  {% block content %}
  <h1>Dashboard</h1>
+ <br>
+ <p>Showing week: {{ start_date }} to {{ end_date }}</p>
+ <br>
+ <a href="?week={{ week_offset|add:"-1" }}">Previous Week|</a>
+ <a href="?week=0">|Current Week</a>
+ 
+
+ <table class="table table-bordered">
+    <thread>
+        <tr>
+            <th>Habit</th>
+            {% for day in week_dates %}
+                <th>{{ day|date:"D M d" }}</th>
+            {% endfor %}
+        </tr>
+    </thread>
+    <tbody>
+        {% for habit, status in habit_status.items %}
+        <tr>
+            
+            <td>{{ habit.name }}</td>
+            {% for day in week_dates %}
+                <td>
+                    {% if status|get_item:day %}
+                        <i class="fa-solid fa-check text-success"></i>
+                    {% else %}
+                        <i class="fa-solid fa-xmark text-danger"></i> 
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+ </table>
  {% endblock %}

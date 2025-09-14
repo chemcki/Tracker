@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+{% if habit_record %} <h2>Edit</h2> {% else %} <h2>New</h2> {% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+        <a href="{% url 'habit_create' %}" class=""btn btn-sm btn-outline-success">+ Add new habit</a>
+        <br><br>
+        <button type="submit" class="btn btn-primary">Save</button>
+        
+</form>
+
+    <br>
+    {% if habit_record %}
+        <a href="{% url 'record_detail' habit_record.pk %}" class="btn btn-secondary">Cancel</a>
+    {% else %}
+        <a href="{% url 'habit_record' %}" class="btn btn-secondary">Cancel</a>
+    {% endif %}
+
+    
+{% endblock %}

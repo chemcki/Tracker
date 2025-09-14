@@ -4,6 +4,9 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
-    <h1>This is the main homepage</h1>
-    <img class="homepage-image" src="{% static 'images/wellness_image.jpg' %}">
+    <a href="{% url 'habit_record' %}" style="text-decoration: none; color: inherit;">
+        <h1>My Habit Records</h1>
+        <img class="homepage-image" src="{% static 'images/wellness_image.jpg' %}">
+    </a>
+    
 {% endblock content %}

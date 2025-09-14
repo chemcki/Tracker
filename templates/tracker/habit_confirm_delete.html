@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete {{ habit }}?</p>
+
+    <button type="submit" class="btn btn-danger">Confirm</button>
+    <a href="{% url 'habit_list' %}" class="btn btn-secondary">Cancel</a>
+ {% endblock %}

@@ -29,6 +29,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     # Local apps
     path("", include('pages.urls')),
+    path("tracker/", include("tracker.urls")),
 ]
 
 if settings.DEBUG:

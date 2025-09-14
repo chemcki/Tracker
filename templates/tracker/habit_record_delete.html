@@ -1,0 +1,13 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<p>Are you sure you want to delete {{ habit_record.habit.name }} on  
+    {{habit_record.date|date:"M d, Y g:i A"}}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+    <a href="{% url 'habit_record' %}" class="btn btn-sm btn-primary">Cancel</a>
+</form>
+
+{% endblock %}

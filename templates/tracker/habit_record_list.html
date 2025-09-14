@@ -1,0 +1,39 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h2>Record of Habits</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Habit</th>
+                <th>Date</th>
+                <th>description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in habit_records %}
+            <tr>
+                <td>{{ record.habit.name }} </td>
+                <td>{{ record.date|date:"M d, Y g:i A" }} </td>
+                <td>{{ record.description|default:"No description" }} </td>
+                <td>{% if record.completed %} Completed {% else %} Not Completed {% endif %} </td>
+                <td>
+                    <a href="{% url 'record_detail' record.pk %}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{% url 'record_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    
+    </table>
+    <form action="{% url 'record_new' %}" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-dark">New Record</button>
+    </form>
+{% endblock %}
