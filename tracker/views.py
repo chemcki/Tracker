@@ -1,6 +1,7 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from collections import defaultdict
 
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -227,3 +228,23 @@ def dashboard(request):
 #             'today': today,
 #       })
 #       return context
+
+# search for either dates habits were completed or habits and the dates they were completed
+def search_results_list(request):
+    query = request.GET.get("q", "")
+    results = HabitRecord.objects.none()
+
+    if query:
+        try:
+            # Try to parse a date first
+            search_date = datetime.strptime(query, "%Y-%m-%d").date()
+            results = HabitRecord.objects.filter(date__date=search_date, completed=True) 
+        except ValueError:
+            # If not a date, treat as habit name
+            results = HabitRecord.objects.filter(habit__name__icontains=query, completed=True)
+
+    context = {"results": results, "query": query}
+    return render(request, "tracker/search_results.html", context)
+
+
+   

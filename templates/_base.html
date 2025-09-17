@@ -41,7 +41,21 @@
                         <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
                     </li>
                     {% endif %}
-                 </ul>   
+                 </ul>
+                 <!-- Search form -->  
+                 <form class="d-flex" action="{% url 'search_results' %}" method="get">
+                    <input 
+                        class="form-control me-2"  
+                        type="search" 
+                        name="q" 
+                        placeholder="YYYY-MM-DD or Habit" 
+                        aria-label="Search"
+                        pattern="\d{4} \d{2} \d{2}"
+                        title="Enter a date in YYYY MM DD format e.g. 2025 09 16"
+
+                        >
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                 </form>  
                 </div>
             </div>
         </nav>

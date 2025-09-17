@@ -1,10 +1,19 @@
-from django.test import SimpleTestCase
+from django.test import TestCase
 from django.urls import reverse, resolve
+from django.contrib.auth import get_user_model
 
-from .views import HomePageView, DashboardPageView
+from .views import HomePageView
+from tracker.views import dashboard
 
-class HomepageTests(SimpleTestCase):
+User = get_user_model()
+
+class HomepageTests(TestCase):
     def setUp(self):
+         # Create a test user
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        
+        # Log in the user
+        self.client.login(username='testuser', password='testpass')
         url = reverse("home")
         self.response = self.client.get(url)
 
@@ -24,8 +33,13 @@ class HomepageTests(SimpleTestCase):
         view = resolve("/")
         self.assertEqual(view.func.__name__, HomePageView.as_view().__name__)
 
-class DashboardPageTests(SimpleTestCase):
+class DashboardPageTests(TestCase):
     def setUp(self):
+         # Create a test user
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        # Log in the user
+        self.client.login(username='testuser', password='testpass')
+        # Get Dashboard page
         url = reverse("dashboard")
         self.response = self.client.get(url)
 
@@ -43,4 +57,4 @@ class DashboardPageTests(SimpleTestCase):
 
     def test_dashboardpage_url_resolves_dashboardpageview(self):
         view = resolve("/dashboard")
-        self.assertEqual(view.func.__name__,DashboardPageView.as_view().__name__)
+        self.assertEqual(view.func.__name__,dashboard.__name__)

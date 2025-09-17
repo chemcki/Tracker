@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+
+{% block title %}Search{% endblock title %}
+
+{% block content %}
+ <h1>Search Results</h1>
+
+{% if results %}
+    {% for record in results %}
+        <div>
+            <h3>{{ record.habit.name }}</h3>
+            <p>Date: {{record.date }}</p>
+            <p>Completed: {{ record.completed|yesno:"✔,✘" }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No results found for "{{ query }}"</p>
+{% endif %}
+{% endblock content %}
+        
+
+ 
