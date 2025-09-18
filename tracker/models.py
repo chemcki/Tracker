@@ -24,7 +24,7 @@ habit has only one record per date.
 
 class HabitRecord(models.Model):
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
-    date =  models.DateTimeField(default=timezone.now)
+    date =  models.DateField(default=timezone.now)
     description = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
 

@@ -17,7 +17,7 @@
             {% for record in habit_records %}
             <tr>
                 <td>{{ record.habit.name }} </td>
-                <td>{{ record.date|date:"M d, Y g:i A" }} </td>
+                <td>{{ record.date|date:"M d, Y" }} </td>
                 <td>{{ record.description|default:"No description" }} </td>
                 <td>{% if record.completed %} Completed {% else %} Not Completed {% endif %} </td>
                 <td>

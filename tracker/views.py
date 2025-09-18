@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 from collections import defaultdict
 
 from django.db.models import Q
+from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -90,16 +91,26 @@ def habit_record_list(request):
 #     template_name = 'tracker/habit_record_list.html'
 #     context_object_name = 'habit_record_list'
 
+'''Create a single habit record for a particular date. Catches any duplicates
+for the current date; if the form fails due to a duplicate, it ensures the 
+DB rolls back cleanly with an error pop up '''
 
 @login_required  
 def habit_record_create(request):
-    form = HabitRecordForm(request.POST or None)
+    form = HabitRecordForm(request.POST or None, user=request.user)
     if request.method == 'POST':
         if form.is_valid():
-            habit_record = form.save(commit=False)
-            habit_record.user = request.user
-            habit_record.save()
-            return redirect('record_detail', pk=habit_record.pk)
+            try:
+                with transaction.atomic():
+            # habit_record = form.save(commit=False)
+            # habit_record.user = request.user
+                    habit_record = form.save()
+                return redirect('record_detail', pk=habit_record.pk)
+            except IntegrityError:
+                # Only add error if form didn't already catch it
+                # if not form.non_field_errors():
+                    form._errors.clear()
+                    form.add_error(None, "This habit has already been recorded for this date.")
         
     context = {'form': form}
     return render(request, 'tracker/habit_record_form.html', context)
@@ -179,7 +190,7 @@ def dashboard(request):
     end_date = start_date + timedelta(days=6)
 
     # Get the records in that window
-    habit_records = HabitRecord.objects.filter(habit__in=habits, date__date__range=[start_date, end_date]
+    habit_records = HabitRecord.objects.filter(habit__in=habits, date__range=[start_date, end_date]
     )
 
     # Create a list of dates in the week
@@ -192,7 +203,7 @@ def dashboard(request):
         # Map date -> completed
         status_per_day = {}
         for date in week_dates:
-            record = habit_records.filter(habit=habit, date__date=date).first()
+            record = habit_records.filter(habit=habit, date=date).first()
             status_per_day[date] = record.completed if record else False
         habit_status[habit] = status_per_day
 
@@ -238,7 +249,7 @@ def search_results_list(request):
         try:
             # Try to parse a date first
             search_date = datetime.strptime(query, "%Y-%m-%d").date()
-            results = HabitRecord.objects.filter(date__date=search_date, completed=True) 
+            results = HabitRecord.objects.filter(date=search_date, completed=True) 
         except ValueError:
             # If not a date, treat as habit name
             results = HabitRecord.objects.filter(habit__name__icontains=query, completed=True)

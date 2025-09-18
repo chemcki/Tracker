@@ -3,7 +3,7 @@
 {% block content %}
 
 <p>Are you sure you want to delete {{ habit_record.habit.name }} on  
-    {{habit_record.date|date:"M d, Y g:i A"}}?</p>
+    {{habit_record.date|date:"M d, Y"}}?</p>
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
