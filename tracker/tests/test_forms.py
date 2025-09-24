@@ -29,10 +29,19 @@ class HabitRecordFormTest(TestCase):
         self.habit = Habit.objects.create(user=self.user, name='Run')
 
     def test_habit_record_form_valid_data(self):
-        form = HabitRecordForm(data={
+        form = HabitRecordForm(
+            data={
             "habit": self.habit.id,
-        })
-        self.assertTrue(form.is_valid())
+            "date": date.today(),  # include date so the form is valid
+            "description": "Morning run",
+            "completed": True,
+        }, 
+        user=self.user
+        )
+        # self.assertTrue(form.is_valid())
+
+        if not form.is_valid():
+            self.fail(f"Form should be valid, but has errors: {form.errors}")
 
     def test_habit_record_form_invalid_data(self):
         # Missing habit or date should fail

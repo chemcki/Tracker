@@ -9,9 +9,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 from .models import Habit, HabitRecord
-from .forms import HabitForm, HabitRecordForm
+from .forms import HabitForm, HabitRecordForm, SearchForm
 
 @login_required    
 def habit_list(request):
@@ -81,9 +82,41 @@ def habit_delete(request, pk):
 
 @login_required  
 def habit_record_list(request):
-     habit_records = HabitRecord.objects.all()
-     context = {"habit_records": habit_records}
-     return render(request, 'tracker/habit_record_list.html', context)
+    # Fetch records avoiding extra queries when accesing record.habit.name
+    habit_records = HabitRecord.objects.select_related('habit')
+
+     # sorting -- get sort query param; default is ascending by date
+    sort = request.GET.get('sort', 'date') 
+    if sort in ['date', '-date', 'habit__name', '-habit__name']:
+        habit_records = habit_records.order_by(sort)
+
+    # Grouping by habit
+        group_by_habit = request.GET.get('group', None)
+        if group_by_habit == 'habit':
+            grouped_records = {}
+            for record in habit_records:
+                grouped_records.setdefault(record.habit, []).append(record)
+            
+            # Sort each habit's records by date (oldest to newest)
+            for habit, records in grouped_records.items():
+                records.sort(key=lambda r: r.date)
+                
+            context = {
+                "grouped_records": grouped_records, 
+                "grouped": True, 
+                "sort": sort
+                }
+        else:
+            # Pagination (for ungrouped lists)
+            paginator = Paginator(habit_records, 15) # show 15 records per page
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            context = {
+                "habit_records": page_obj, 
+                "grouped": False, 
+                "sort": sort
+                }
+        return render(request, 'tracker/habit_record_list.html', context)
 
 
 # class HabitRecordListView(LoginRequiredMixin, ListView):
@@ -241,18 +274,23 @@ def dashboard(request):
 #       return context
 
 # search for either dates habits were completed or habits and the dates they were completed
+@login_required 
 def search_results_list(request):
-    query = request.GET.get("q", "")
+    form = SearchForm(request.GET or None)
     results = HabitRecord.objects.none()
-
-    if query:
-        try:
-            # Try to parse a date first
-            search_date = datetime.strptime(query, "%Y-%m-%d").date()
-            results = HabitRecord.objects.filter(date=search_date, completed=True) 
-        except ValueError:
-            # If not a date, treat as habit name
-            results = HabitRecord.objects.filter(habit__name__icontains=query, completed=True)
+    query = ""
+    
+    if form.is_valid():
+        query = form.cleaned_data.get("q", "")
+    
+        if query:
+            try:
+                # Try to parse a date first
+                search_date = datetime.strptime(query, "%Y-%m-%d").date()
+                results = HabitRecord.objects.filter(date=search_date, completed=True) 
+            except ValueError:
+                # If not a date, treat as habit name
+                results = HabitRecord.objects.filter(habit__name__icontains=query, completed=True)
 
     context = {"results": results, "query": query}
     return render(request, "tracker/search_results.html", context)

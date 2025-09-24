@@ -34,7 +34,10 @@ class HabitRecordForm(forms.ModelForm):
 
         if habit and date:
             # Check for duplicate habit record
-            if HabitRecord.objects.filter(habit=habit, date=date).exists():
+            qs = HabitRecord.objects.filter(habit=habit, date=date)
+            if self.instance.pk: # if editing
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
                 raise forms.ValidationError(DUPLICATE_ERROR_MESSAGE)
         
         return cleaned_data
@@ -49,4 +52,17 @@ class HabitRecordForm(forms.ModelForm):
                 e.error_dict.pop('__all__')
             if e.error_dict:
                 raise
-        
+# Search Form       
+class SearchForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-controll me-2",
+             "type": "search", 
+             "placeholder": "YYYY-MM-DD or Habit",
+             "aria-label": "Search",
+             "title": "Enter YYYY-MM-DD, YYYY MM DD, or Habit name"
+            }),
+            label=""
+    )
+    
