@@ -14,3 +14,12 @@ h1 {
     height: 500;
     width: auto;
 }
+
+/* Target only the search form inside the navbar */
+.navbar-search .form-control,
+.navbar-search .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    height: 2rem !important;   /* force a smaller height */
+    line-height: 1.2 !important;
+}

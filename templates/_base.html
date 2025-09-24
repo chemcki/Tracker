@@ -12,7 +12,7 @@
          <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
          <!-- Font Awesome CDN -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     </head>
     <body>
@@ -43,18 +43,9 @@
                     {% endif %}
                  </ul>
                  <!-- Search form -->  
-                 <form class="d-flex" action="{% url 'search_results' %}" method="get">
-                    <input 
-                        class="form-control me-2"  
-                        type="search" 
-                        name="q" 
-                        placeholder="YYYY-MM-DD or Habit" 
-                        aria-label="Search"
-                        pattern="\d{4} \d{2} \d{2}"
-                        title="Enter a date in YYYY MM DD format e.g. 2025 09 16"
-
-                        >
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                 <form class="d-flex navbar-search" action="{% url 'search_results' %}" method="get">
+                    {{ form|crispy }}
+                    <button class="btn btn-outline-success btn-sm" type="submit">Search</button>
                  </form>  
                 </div>
             </div>

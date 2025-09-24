@@ -4,6 +4,14 @@
 {% block content %}
     <h2>Record of Habits</h2>
 
+    <!--Sorting & Grouping links-->
+    <a href="?sort=date">Date ↑</a> |
+    <a href="?sort=-date">Date ↓</a> |
+    <a href="?sort=habit__name">Habit A→Z</a> |
+    <a href="?sort=-habit__name">Habit Z→A</a> |
+    <a href="?group=habit">Group by Habit</a>
+    
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -14,6 +22,26 @@
             </tr>
         </thead>
         <tbody>
+            {% if grouped %}
+                {% for habit, records in grouped_records.items %}
+                    <tr class="table-secondary"></tr>
+                        <td colspan="5"><strong>{{ habit.name }}</strong></td>
+                    </tr>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.habit.name }}</td>
+                        <td>{{ record.date|date:"M d, Y" }}</td>
+                        <td>{{ record.description|default:"No discription" }}</td>
+                        <td>{% if record.completed %} Completed {% else %} Not Completed {% endif %}</td>
+                        <td>
+                            <a href="{% url 'record_detail' record.pk %}" class="btn btn-sm btn-primary">View</a>
+                            <a href="{% url 'record_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
             {% for record in habit_records %}
             <tr>
                 <td>{{ record.habit.name }} </td>
@@ -27,13 +55,31 @@
                 </td>
             </tr>
             {% endfor %}
+        {% endif %}
         </tbody>
-    
     </table>
-    <form action="{% url 'record_new' %}" method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
 
-        <button type="submit" class="btn btn-dark">New Record</button>
-    </form>
+<!--Pagination controls-->
+{% if not grouped %}
+<div class="mt-3">
+    {% if habit_records.has_previous %}
+        <a href="?page={{ habit_records.previous_page_number }}&sort={{ sort }}">Previous</a>
+    {% endif %}
+
+    Page {{ habit_records.number }} of  {{ habit_records.paginator.num_pages }}
+
+    {% if habit_records.has_next %}
+        <a href="?page={{ habit_records.next_page_number }}&sort={{ sort }}">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+
+
+<!-- Form for new record-->
+<form action="{% url 'record_new' %}" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <button type="submit" class="btn btn-dark">New Record</button>
+</form>
 {% endblock %}
